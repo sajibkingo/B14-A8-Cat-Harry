@@ -34,7 +34,7 @@ export default function HeroSlider() {
     ];
 
     return (
-        <section className="relative w-full">
+        <section className="relative w-full bg-black">
             <Swiper
                 modules={[Autoplay, Pagination, Navigation, EffectFade]}
                 effect="fade"
@@ -49,31 +49,31 @@ export default function HeroSlider() {
                     <SwiperSlide key={slide.id}>
                         <div className="relative w-full h-full flex items-center justify-center">
                             <div
-                                className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-10000"
+                                className="absolute inset-0 bg-cover bg-center"
                                 style={{ backgroundImage: `url(${slide.image})` }}
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-base-100 via-base-100/70 to-black/60" />
+                            <div className="absolute inset-0 bg-black/65" />
 
                             <div className="relative z-10 max-w-4xl mx-auto px-6 text-center flex flex-col items-center">
-                                <span className="badge badge-primary badge-outline text-xs md:text-sm font-semibold tracking-widest uppercase mb-4 px-3 py-3">
+                                <span className="badge badge-primary text-xs md:text-sm font-semibold tracking-widest uppercase mb-4 px-3 py-3 border border-primary/40 bg-primary/20 text-amber-300">
                                     {slide.badge}
                                 </span>
-                                <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-4">
+                                <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-4 drop-shadow-md">
                                     {slide.title}
                                 </h1>
-                                <p className="text-sm md:text-lg text-slate-300 max-w-2xl leading-relaxed mb-8">
+                                <p className="text-sm md:text-lg text-gray-200 max-w-2xl leading-relaxed mb-8 drop-shadow-sm">
                                     {slide.subtext}
                                 </p>
                                 <div className="flex flex-wrap items-center justify-center gap-4">
                                     <Link
                                         href="/studios"
-                                        className="btn btn-primary px-8 text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all"
+                                        className="btn btn-primary px-8 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-all"
                                     >
                                         Explore Studios
                                     </Link>
                                     <Link
                                         href="/studios"
-                                        className="btn btn-outline btn-neutral bg-base-100/20 backdrop-blur-md border-white/20 text-white font-bold rounded-xl hover:bg-white hover:text-black transition-all"
+                                        className="btn btn-outline border-white text-white font-bold rounded-xl hover:bg-white hover:text-black transition-all"
                                     >
                                         Host Your Space
                                     </Link>

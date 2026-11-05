@@ -1,8 +1,8 @@
 import HeroSlider from "@/components/HeroSlider";
 import StudioCard from "@/components/StudioCard";
-// import CategoryCards from "@/components/CategoryCards";
-// import HowItWorks from "@/components/HowItWorks";
-// import HostGuarantee from "@/components/HostGuarantee";
+import CategoryCards from "@/components/CategoryCards";
+import HowItWorks from "@/components/HowItWorks";
+import HostGuarantee from "@/components/HostGuarantee";
 import Link from "next/link";
 
 async function getFeaturedStudios() {
@@ -62,9 +62,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* <CategoryCards />
+      <CategoryCards />
       <HowItWorks />
-      <HostGuarantee /> */}
+      <HostGuarantee />
     </div>
   );
 }
