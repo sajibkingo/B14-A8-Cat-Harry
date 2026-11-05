@@ -6,9 +6,13 @@ export default function ThemeToggle() {
 
     useEffect(() => {
         const savedTheme = localStorage.getItem("studiospace-theme") || "dark";
-        setTheme(savedTheme);
-        document.documentElement.setAttribute("data-theme", savedTheme);
-    }, []);
+        if (savedTheme !== theme) {
+            document.documentElement.setAttribute("data-theme", savedTheme);
+            setTimeout(() => {
+                setTheme(savedTheme);
+            }, 0);
+        }
+    }, [theme]);
 
     const toggleTheme = () => {
         const nextTheme = theme === "dark" ? "light" : "dark";
@@ -22,6 +26,7 @@ export default function ThemeToggle() {
             onClick={toggleTheme}
             className="btn btn-ghost btn-circle text-base-content"
             aria-label="Toggle Theme"
+            type="button"
         >
             {theme === "dark" ? (
                 <svg
