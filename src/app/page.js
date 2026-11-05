@@ -4,6 +4,7 @@ import CategoryCards from "@/components/CategoryCards";
 import HowItWorks from "@/components/HowItWorks";
 import HostGuarantee from "@/components/HostGuarantee";
 import Link from "next/link";
+import { Suspense } from "react";
 
 async function getFeaturedStudios() {
   try {
@@ -17,12 +18,53 @@ async function getFeaturedStudios() {
   }
 }
 
-export default async function HomePage() {
+async function FeaturedStudios() {
   const featuredStudios = await getFeaturedStudios();
 
+  if (!featuredStudios || featuredStudios.length === 0) {
+    return (
+      <div className="text-center py-16 bg-base-200 rounded-2xl border border-base-300">
+        <p className="text-base-content/60 text-sm">
+          No featured studios found. Start by listing a studio or checking backend database connection.
+        </p>
+        <Link href="/add-studio" className="btn btn-primary btn-sm mt-4 text-white">
+          List a Studio
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {featuredStudios.map((studio) => (
+        <StudioCard key={studio._id} studio={studio} />
+      ))}
+    </div>
+  );
+}
+
+function FeaturedStudiosSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" aria-hidden="true">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="h-64 rounded-2xl bg-base-200 animate-pulse" />
+      ))}
+    </div>
+  );
+}
+
+function HeroSliderSkeleton() {
+  return (
+    <section className="relative w-full bg-black h-[540px] md:h-[620px] animate-pulse" aria-hidden="true" />
+  );
+}
+
+export default function HomePage() {
   return (
     <div className="w-full flex flex-col">
-      <HeroSlider />
+      <Suspense fallback={<HeroSliderSkeleton />}>
+        <HeroSlider />
+      </Suspense>
 
       <section className="py-20 bg-base-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,22 +85,9 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {featuredStudios && featuredStudios.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredStudios.map((studio) => (
-                <StudioCard key={studio._id} studio={studio} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 bg-base-200 rounded-2xl border border-base-300">
-              <p className="text-base-content/60 text-sm">
-                No featured studios found. Start by listing a studio or checking backend database connection.
-              </p>
-              <Link href="/add-studio" className="btn btn-primary btn-sm mt-4 text-white">
-                List a Studio
-              </Link>
-            </div>
-          )}
+          <Suspense fallback={<FeaturedStudiosSkeleton />}>
+            <FeaturedStudios />
+          </Suspense>
         </div>
       </section>
 

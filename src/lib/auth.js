@@ -2,18 +2,20 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 
-const client = new MongoClient(process.env.MONGO_URI);
-const db = client.db("Cat-Harry");
+const uri = process.env.MONGO_URI;
+
+if (!uri) {
+    throw new Error("MONGO_URI is missing in environment variables");
+}
+
+const client = new MongoClient(uri);
 
 export const auth = betterAuth({
-    database: mongodbAdapter(db),
+    database: mongodbAdapter(client.db("Cat-Harry")),
+    secret: process.env.BETTER_AUTH_SECRET || "super_secret_jwt_key_studiospace_2026",
+    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
     emailAndPassword: {
         enabled: true,
-    },
-    socialProviders: {
-        google: {
-            clientId: process.env.GOOGLE_CLIENT_ID || "",
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-        },
+        minPasswordLength: 8,
     },
 });

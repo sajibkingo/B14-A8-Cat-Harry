@@ -17,8 +17,8 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
 
     const validatePassword = (pass) => {
-        if (pass.length < 6) {
-            return "Length must be at least 6 characters";
+        if (pass.length < 8) {
+            return "Length must be at least 8 characters";
         }
         if (!/[A-Z]/.test(pass)) {
             return "Must have an Uppercase letter in the password";
@@ -50,10 +50,10 @@ export default function RegisterPage() {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
-                image: formData.photoURL || undefined,
+                image: formData.photoURL,
             });
 
-            if (res.error) {
+            if (res?.error) {
                 toast.error(res.error.message || "Registration failed");
                 setLoading(false);
                 return;
