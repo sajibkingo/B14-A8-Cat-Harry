@@ -25,7 +25,8 @@ async function getStudios(category) {
 }
 
 export default async function StudiosPage({ searchParams }) {
-    const currentCategory = searchParams?.category || "All";
+    const resolvedSearchParams = await searchParams;
+    const currentCategory = resolvedSearchParams?.category || "All";
     const studios = await getStudios(currentCategory);
 
     return (
