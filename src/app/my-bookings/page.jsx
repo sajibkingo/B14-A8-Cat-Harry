@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import PrivateRoute from "@/components/PrivateRoute";
 import EmptyState from "@/components/EmptyState";
+import { ensureBackendToken } from "@/lib/backend-token";
 import toast from "react-hot-toast";
 
 export default function MyBookingsPage() {
@@ -38,6 +39,7 @@ export default function MyBookingsPage() {
 
     const handleCancelBooking = async (bookingId) => {
         try {
+            await ensureBackendToken(session?.user);
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/bookings/${bookingId}/cancel`,
                 {

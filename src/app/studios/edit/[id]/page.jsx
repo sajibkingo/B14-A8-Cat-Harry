@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import PrivateRoute from "@/components/PrivateRoute";
+import { ensureBackendToken } from "@/lib/backend-token";
 import toast from "react-hot-toast";
 
 const AVAILABLE_AMENITIES = [
@@ -89,6 +90,7 @@ export default function EditStudioPage() {
         e.preventDefault();
         setSubmitting(true);
         try {
+            await ensureBackendToken();
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/studios/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },

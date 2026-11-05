@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSession } from "@/lib/auth-client";
 import PrivateRoute from "@/components/PrivateRoute";
 import EmptyState from "@/components/EmptyState";
+import { ensureBackendToken } from "@/lib/backend-token";
 import toast from "react-hot-toast";
 
 export default function MyListingsPage() {
@@ -43,9 +44,10 @@ export default function MyListingsPage() {
         if (!selectedStudio) return;
         setDeleting(true);
         try {
+            await ensureBackendToken(session?.user);
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/studios/${selectedStudio._id}`,
-                { method: "DELETE" }
+                { method: "DELETE", credentials: "include" }
             );
             if (!res.ok) throw new Error("Delete failed");
 

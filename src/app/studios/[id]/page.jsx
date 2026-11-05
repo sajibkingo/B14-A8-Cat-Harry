@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
+import { ensureBackendToken } from "@/lib/backend-token";
 import toast from "react-hot-toast";
 
 export default function StudioDetailPage() {
@@ -60,6 +61,7 @@ export default function StudioDetailPage() {
 
         setBookingLoading(true);
         try {
+            await ensureBackendToken(session?.user);
             const payload = {
                 studioId: studio._id,
                 studioTitle: studio.title,

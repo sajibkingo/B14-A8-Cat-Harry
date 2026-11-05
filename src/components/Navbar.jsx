@@ -115,7 +115,7 @@ export default function Navbar() {
                   <p className="text-xs text-base-content/60 truncate">{session.user.email}</p>
                 </li>
                 <li>
-                  <Link href="/add-studio">Host a Studio</Link>
+                  <Link href="/add-studio">Add New Studio</Link>
                 </li>
                 <li>
                   <Link href="/my-listings">My Listings</Link>

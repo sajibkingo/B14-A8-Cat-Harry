@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import PrivateRoute from "@/components/PrivateRoute";
+import { ensureBackendToken } from "@/lib/backend-token";
 import toast from "react-hot-toast";
 
 const AVAILABLE_AMENITIES = [
@@ -94,15 +95,18 @@ export default function AddStudioPage() {
 
         setSubmitting(true);
         try {
+            await ensureBackendToken(session?.user);
             const payload = {
                 ...formData,
                 ownerEmail: session?.user?.email,
                 ownerName: session?.user?.name,
             };
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/studios`, {
+            const res = await fetch("http://localhost:5000/api/studios", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 credentials: "include",
                 body: JSON.stringify(payload),
             });
@@ -114,6 +118,7 @@ export default function AddStudioPage() {
 
             toast.success("Studio listed successfully!");
             router.push("/my-listings");
+            router.refresh();
         } catch (error) {
             toast.error(error.message || "Submission failed");
         } finally {

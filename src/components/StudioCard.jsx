@@ -3,8 +3,6 @@ import Link from "next/link";
 export default function StudioCard({ studio }) {
     const getRating = () => {
         if (studio?.rating) return studio.rating;
-
-
         const categoryRatings = {
             "Photo Studio": 4.9,
             "Film Stage": 4.8,
@@ -12,29 +10,25 @@ export default function StudioCard({ studio }) {
             "Music Suite": 4.95,
             "Art Workshop": 4.65,
         };
-
         if (studio?.category && categoryRatings[studio.category]) {
             return categoryRatings[studio.category];
         }
-
-        const str = studio?._id || studio?.title || "default";
-        let sum = 0;
-        for (let i = 0; i < str.length; i++) {
-            sum = (sum << 5) - sum + str.charCodeAt(i);
-            sum |= 0;
-        }
-        const pool = [4.9, 4.75, 4.85, 4.6, 4.95, 4.7];
-        return pool[Math.abs(sum) % pool.length];
+        return 4.85;
     };
 
     const currentRating = getRating();
 
     return (
-        <div className="card bg-base-200 border border-base-300 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:border-primary/40 transition-all flex flex-col justify-between group">
-            <figure className="relative h-56 w-full overflow-hidden bg-base-300">
+        <div className="card w-full bg-base-200 border border-base-300 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:border-primary/40 transition-all duration-300 flex flex-col justify-between h-[450px] group">
+
+            {/* Fixed Height Uniform Image Banner */}
+            <div className="relative h-56 w-full overflow-hidden bg-base-300 shrink-0">
                 <img
-                    src={studio?.image || "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800"}
-                    alt={studio?.title || "Studio space"}
+                    src={
+                        studio?.image ||
+                        "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800"
+                    }
+                    alt={studio?.title || "Studio workspace"}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-3 left-3">
@@ -46,8 +40,9 @@ export default function StudioCard({ studio }) {
                     <span>★</span>
                     <span>{currentRating}</span>
                 </div>
-            </figure>
+            </div>
 
+            {/* Card Content with balanced spacing */}
             <div className="p-5 flex-1 flex flex-col justify-between">
                 <div>
                     <div className="flex items-center gap-1.5 text-xs text-base-content/60 mb-2">
@@ -73,24 +68,30 @@ export default function StudioCard({ studio }) {
                         <span className="line-clamp-1">{studio?.location || "Dhaka, Bangladesh"}</span>
                     </div>
 
-                    <h3 className="font-bold text-lg text-base-content line-clamp-1 group-hover:text-primary transition-colors">
+                    <h3 className="font-bold text-lg text-base-content line-clamp-1 group-hover:text-primary transition-colors tracking-tight">
                         {studio?.title}
                     </h3>
+                    <p className="text-xs text-base-content/60 line-clamp-2 mt-2 leading-relaxed">
+                        {studio?.description ||
+                            "Dedicated creative facility tailored for commercial shoots and professional media production."}
+                    </p>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-base-300 flex items-center justify-between">
+                {/* Pricing & Action Button */}
+                <div className="pt-4 border-t border-base-300/80 flex items-center justify-between mt-auto">
                     <div>
-                        <span className="text-xl font-black text-primary">${studio?.hourlyRate}</span>
+                        <span className="text-2xl font-black text-primary">${studio?.hourlyRate}</span>
                         <span className="text-xs text-base-content/60 font-medium"> / hr</span>
                     </div>
                     <Link
                         href={`/studios/${studio?._id}`}
-                        className="btn btn-primary btn-sm rounded-xl font-bold text-white shadow-md shadow-primary/20 hover:scale-105 transition-all"
+                        className="btn btn-primary btn-sm rounded-xl font-bold text-white shadow-md shadow-primary/20 hover:scale-105 transition-all text-xs"
                     >
                         View Details
                     </Link>
                 </div>
             </div>
+
         </div>
     );
 }

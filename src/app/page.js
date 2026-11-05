@@ -7,9 +7,10 @@ import Link from "next/link";
 
 async function getFeaturedStudios() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/studios?limit=6`, {
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/studios?limit=6`,
+      { cache: "no-store" }
+    );
     if (!res.ok) return [];
     return await res.json();
   } catch {
@@ -24,10 +25,7 @@ export default async function HomePage() {
     <div className="space-y-24 pb-20">
       <HeroSlider />
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <CategoryCards />
-      </section>
-
+      {/* 1. Featured Studio Spaces (Ekhon Categories er upore) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
@@ -50,9 +48,9 @@ export default async function HomePage() {
         </div>
 
         {featuredStudios.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredStudios.map((studio) => (
-              <div key={studio._id} className="flex">
+              <div key={studio._id} className="w-full">
                 <StudioCard studio={studio} />
               </div>
             ))}
@@ -64,10 +62,17 @@ export default async function HomePage() {
         )}
       </section>
 
+      {/* 2. Browse Categories Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <CategoryCards />
+      </section>
+
+      {/* 3. How It Works */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <HowItWorks />
       </section>
 
+      {/* 4. Host Protection Guarantee */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <HostGuarantee />
       </section>
