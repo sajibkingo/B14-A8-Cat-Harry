@@ -1,62 +1,60 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
+
+const STORAGE_KEY = "studiospace-theme";
+
+function subscribe(onStoreChange) {
+    window.addEventListener("storage", onStoreChange);
+    return () => window.removeEventListener("storage", onStoreChange);
+}
+
+function getThemeSnapshot() {
+    return localStorage.getItem(STORAGE_KEY) || "dark";
+}
+
+function getServerThemeSnapshot() {
+    return "dark";
+}
 
 export default function ThemeToggle() {
-    const [theme, setTheme] = useState("dark");
+    const theme = useSyncExternalStore(
+        subscribe,
+        getThemeSnapshot,
+        getServerThemeSnapshot
+    );
 
     useEffect(() => {
-        const savedTheme = localStorage.getItem("studiospace-theme") || "dark";
-        if (savedTheme !== theme) {
-            document.documentElement.setAttribute("data-theme", savedTheme);
-            setTimeout(() => {
-                setTheme(savedTheme);
-            }, 0);
-        }
+        document.documentElement.setAttribute("data-theme", theme);
     }, [theme]);
 
     const toggleTheme = () => {
-        const nextTheme = theme === "dark" ? "light" : "dark";
-        setTheme(nextTheme);
-        document.documentElement.setAttribute("data-theme", nextTheme);
-        localStorage.setItem("studiospace-theme", nextTheme);
+        localStorage.setItem(STORAGE_KEY, theme === "dark" ? "light" : "dark");
+        // The "storage" event only fires in other tabs, so notify this one manually.
+        window.dispatchEvent(new Event("storage"));
     };
 
     return (
         <button
             onClick={toggleTheme}
-            className="btn btn-ghost btn-circle text-base-content"
+            className="btn btn-ghost btn-circle btn-sm border border-base-300"
             aria-label="Toggle Theme"
-            type="button"
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
         >
             {theme === "dark" ? (
+                // Sun Icon for Dark Mode
                 <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-amber-400"
-                    fill="none"
+                    className="w-4 h-4 text-amber-400 fill-current"
                     viewBox="0 0 24 24"
-                    stroke="currentColor"
                 >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                    />
+                    <path d="M12 4.5a1 1 0 011-1h0a1 1 0 011 1v1a1 1 0 011-1h0a1 1 0 01-1-1v-1zm0 14a1 1 0 011-1h0a1 1 0 011 1v1a1 1 0 011-1h0a1 1 0 01-1-1v-1zm8.5-7.5a1 1 0 01-1 1h-1a1 1 0 01-1-1h0a1 1 0 011-1h1a1 1 0 011 1zm-14 0a1 1 0 01-1 1h-1a1 1 0 01-1-1h0a1 1 0 011-1h1a1 1 0 011 1zm12.02-5.52a1 1 0 010 1.41l-.71.71a1 1 0 01-1.41-1.41l.71-.71a1 1 0 011.41 0zm-11.31 11.31a1 1 0 010 1.41l-.71.71a1 1 0 01-1.41-1.41l.71-.71a1 1 0 011.41 0zm11.31 0a1 1 0 01-1.41 0l-.71-.71a1 1 0 011.41-1.41l.71.71a1 1 0 010 1.41zm-11.31-11.31a1 1 0 01-1.41 0l-.71-.71a1 1 0 011.41-1.41l.71.71a1 1 0 010 1.41zM12 7a5 5 0 100 10 5 5 0 000-10z" />
                 </svg>
             ) : (
+                // Moon Icon for Light Mode
                 <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-slate-700"
-                    fill="none"
+                    className="w-4 h-4 text-base-content fill-current"
                     viewBox="0 0 24 24"
-                    stroke="currentColor"
                 >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                    />
+                    <path d="M21.64 13a1 1 0 00-1.05-.14 8.05 8.05 0 01-3.37.73A8.15 8.15 0 019.08 5.45a8.59 8.59 0 01.25-2A1 1 0 008 2.36a10.14 10.14 0 1013.6 11.69 1 1 0 00.04-1.05z" />
                 </svg>
             )}
         </button>

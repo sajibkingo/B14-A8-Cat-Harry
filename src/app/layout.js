@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -38,7 +39,16 @@ export default function RootLayout({ children }) {
             },
           }}
         />
-        <Navbar />
+        {/* Navbar calls usePathname()/useSession(), whose values only exist at
+            runtime — under cacheComponents it must sit inside <Suspense> or the
+            prerender of dynamic routes (e.g. /studios/[id]) fails. */}
+        <Suspense
+            fallback={
+                <div className="sticky top-0 z-40 h-20 border-b border-base-300 bg-base-100/80" />
+            }
+        >
+            <Navbar />
+        </Suspense>
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

@@ -1,4 +1,5 @@
 import StudioCard from "@/components/StudioCard";
+import EmptyState from "@/components/EmptyState";
 import Link from "next/link";
 
 const CATEGORIES = [
@@ -16,7 +17,7 @@ async function getStudios(category) {
         if (category && category !== "All") {
             url.searchParams.set("category", category);
         }
-        const res = await fetch(url.toString(), { cache: "no-store" });
+        const res = await fetch(url.toString());
         if (!res.ok) return [];
         return await res.json();
     } catch {
@@ -68,15 +69,14 @@ export default async function StudiosPage({ searchParams }) {
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-24 bg-base-200 border border-base-300 rounded-3xl">
-                    <h3 className="text-lg font-bold text-base-content">No studios found in this category</h3>
-                    <p className="text-xs text-base-content/60 mt-2">
-                        Try switching categories or list a new studio in this workspace classification.
-                    </p>
-                    <Link href="/add-studio" className="btn btn-primary btn-sm mt-6 text-white rounded-xl">
-                        List a Space
-                    </Link>
-                </div>
+                <EmptyState
+                    title={`No Workspaces in "${currentCategory}"`}
+                    description="We couldn't find any listed production studios under this category. Explore other categories or list your studio space here."
+                    actionLabel="View All Studios"
+                    actionHref="/studios?category=All"
+                    secondaryLabel="List Your Studio"
+                    secondaryHref="/add-studio"
+                />
             )}
         </div>
     );

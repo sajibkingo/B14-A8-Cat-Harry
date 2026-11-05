@@ -1,10 +1,9 @@
 import HeroSlider from "@/components/HeroSlider";
-import StudioCard from "@/components/StudioCard";
 import CategoryCards from "@/components/CategoryCards";
 import HowItWorks from "@/components/HowItWorks";
 import HostGuarantee from "@/components/HostGuarantee";
+import StudioCard from "@/components/StudioCard";
 import Link from "next/link";
-import { Suspense } from "react";
 
 async function getFeaturedStudios() {
   try {
@@ -18,82 +17,60 @@ async function getFeaturedStudios() {
   }
 }
 
-async function FeaturedStudios() {
+export default async function HomePage() {
   const featuredStudios = await getFeaturedStudios();
 
-  if (!featuredStudios || featuredStudios.length === 0) {
-    return (
-      <div className="text-center py-16 bg-base-200 rounded-2xl border border-base-300">
-        <p className="text-base-content/60 text-sm">
-          No featured studios found. Start by listing a studio or checking backend database connection.
-        </p>
-        <Link href="/add-studio" className="btn btn-primary btn-sm mt-4 text-white">
-          List a Studio
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {featuredStudios.map((studio) => (
-        <StudioCard key={studio._id} studio={studio} />
-      ))}
-    </div>
-  );
-}
+    <div className="space-y-24 pb-20">
+      <HeroSlider />
 
-function FeaturedStudiosSkeleton() {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" aria-hidden="true">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="h-64 rounded-2xl bg-base-200 animate-pulse" />
-      ))}
-    </div>
-  );
-}
-
-function HeroSliderSkeleton() {
-  return (
-    <section className="relative w-full bg-black h-[540px] md:h-[620px] animate-pulse" aria-hidden="true" />
-  );
-}
-
-export default function HomePage() {
-  return (
-    <div className="w-full flex flex-col">
-      <Suspense fallback={<HeroSliderSkeleton />}>
-        <HeroSlider />
-      </Suspense>
-
-      <section className="py-20 bg-base-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
-            <div>
-              <span className="text-primary font-bold tracking-wider uppercase text-xs">
-                Handpicked Workspaces
-              </span>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-base-content mt-2">
-                Featured Studios
-              </h2>
-            </div>
-            <Link
-              href="/studios"
-              className="btn btn-outline btn-primary btn-sm rounded-lg font-bold"
-            >
-              View All Workspaces →
-            </Link>
-          </div>
-
-          <Suspense fallback={<FeaturedStudiosSkeleton />}>
-            <FeaturedStudios />
-          </Suspense>
-        </div>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <CategoryCards />
       </section>
 
-      <CategoryCards />
-      <HowItWorks />
-      <HostGuarantee />
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div>
+            <span className="text-primary font-bold tracking-wider uppercase text-xs">
+              Prime Workspaces
+            </span>
+            <h2 className="text-3xl md:text-5xl font-black text-base-content tracking-tight mt-2">
+              Featured Studio Spaces
+            </h2>
+            <p className="text-base-content/70 text-sm mt-3 max-w-xl leading-relaxed">
+              Explore our highest-rated soundstages, photo lofts, and audio suites ready for immediate booking.
+            </p>
+          </div>
+          <Link
+            href="/studios"
+            className="btn btn-outline border-base-300 rounded-xl font-bold text-xs hover:bg-base-200 self-start md:self-auto"
+          >
+            View All Workspaces
+          </Link>
+        </div>
+
+        {featuredStudios.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+            {featuredStudios.map((studio) => (
+              <div key={studio._id} className="flex">
+                <StudioCard studio={studio} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="py-16 text-center bg-base-200 border border-base-300 rounded-3xl">
+            <p className="text-sm text-base-content/60">No featured studios currently listed.</p>
+          </div>
+        )}
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <HowItWorks />
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <HostGuarantee />
+      </section>
     </div>
   );
 }

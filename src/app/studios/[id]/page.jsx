@@ -25,7 +25,7 @@ export default function StudioDetailPage() {
                 if (!res.ok) throw new Error("Studio not found");
                 const data = await res.json();
                 setStudio(data);
-            } catch (err) {
+            } catch {
                 toast.error("Failed to load studio details");
             } finally {
                 setLoading(false);
@@ -74,6 +74,7 @@ export default function StudioDetailPage() {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/bookings`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(payload),
             });
 
@@ -86,7 +87,7 @@ export default function StudioDetailPage() {
             setIsModalOpen(false);
             router.push("/my-bookings");
         } catch (error) {
-            toast.error(error.message || "Reservation failed");
+            toast.error(error.message || "Reservation collision or error");
         } finally {
             setBookingLoading(false);
         }

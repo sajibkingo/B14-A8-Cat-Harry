@@ -76,9 +76,9 @@ export default function AddStudioPage() {
                 setFormData((prev) => ({ ...prev, image: data.data.url }));
                 toast.success("Image uploaded successfully");
             } else {
-                toast.error("ImgBB upload failed. Provide a direct URL instead.");
+                toast.error("ImgBB upload failed. Provide direct URL instead.");
             }
-        } catch (err) {
+        } catch {
             toast.error("Error uploading image");
         } finally {
             setUploading(false);
@@ -103,6 +103,7 @@ export default function AddStudioPage() {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/studios`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(payload),
             });
 

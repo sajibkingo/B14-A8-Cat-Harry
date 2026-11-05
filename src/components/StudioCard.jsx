@@ -4,6 +4,7 @@ export default function StudioCard({ studio }) {
     const getRating = () => {
         if (studio?.rating) return studio.rating;
 
+
         const categoryRatings = {
             "Photo Studio": 4.9,
             "Film Stage": 4.8,

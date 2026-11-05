@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "@/lib/auth-client";
 import PrivateRoute from "@/components/PrivateRoute";
+import EmptyState from "@/components/EmptyState";
 import toast from "react-hot-toast";
 
 export default function MyListingsPage() {
@@ -30,7 +31,12 @@ export default function MyListingsPage() {
     };
 
     useEffect(() => {
-        fetchListings();
+        // Load via a local async function — calling a setState-containing
+        // function directly inside an effect trips react-hooks/set-state-in-effect.
+        async function load() {
+            await fetchListings();
+        }
+        load();
     }, [session]);
 
     const handleDelete = async () => {
@@ -65,7 +71,10 @@ export default function MyListingsPage() {
                             Manage, update specifications, or remove your hosted production spaces
                         </p>
                     </div>
-                    <Link href="/add-studio" className="btn btn-primary btn-sm rounded-xl text-white font-bold">
+                    <Link
+                        href="/add-studio"
+                        className="btn btn-primary btn-sm rounded-xl text-white font-bold"
+                    >
                         + Add New Studio
                     </Link>
                 </div>
@@ -89,21 +98,36 @@ export default function MyListingsPage() {
                             </thead>
                             <tbody>
                                 {listings.map((item) => (
-                                    <tr key={item._id} className="border-b border-base-300/50 hover:bg-base-300/30">
+                                    <tr
+                                        key={item._id}
+                                        className="border-b border-base-300/50 hover:bg-base-300/30"
+                                    >
                                         <td>
                                             <div className="flex items-center gap-3">
                                                 <div className="w-12 h-12 rounded-xl overflow-hidden bg-base-300 shrink-0">
-                                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                                                    <img
+                                                        src={item.image}
+                                                        alt={item.title}
+                                                        className="w-full h-full object-cover"
+                                                    />
                                                 </div>
-                                                <span className="font-bold text-sm text-base-content line-clamp-1">{item.title}</span>
+                                                <span className="font-bold text-sm text-base-content line-clamp-1">
+                                                    {item.title}
+                                                </span>
                                             </div>
                                         </td>
                                         <td>
-                                            <span className="badge badge-sm badge-outline text-xs">{item.category}</span>
+                                            <span className="badge badge-sm badge-outline text-xs">
+                                                {item.category}
+                                            </span>
                                         </td>
-                                        <td className="font-extrabold text-primary">${item.hourlyRate}/hr</td>
+                                        <td className="font-extrabold text-primary">
+                                            ${item.hourlyRate}/hr
+                                        </td>
                                         <td>${item.securityDeposit}</td>
-                                        <td className="text-xs text-base-content/70">{item.location}</td>
+                                        <td className="text-xs text-base-content/70">
+                                            {item.location}
+                                        </td>
                                         <td className="text-right space-x-2">
                                             <Link
                                                 href={`/studios/edit/${item._id}`}
@@ -124,23 +148,28 @@ export default function MyListingsPage() {
                         </table>
                     </div>
                 ) : (
-                    <div className="text-center py-24 bg-base-200 border border-base-300 rounded-3xl">
-                        <h3 className="text-lg font-bold text-base-content">No studios listed yet</h3>
-                        <p className="text-xs text-base-content/60 mt-2">
-                            You have not posted any creative workspaces under this account.
-                        </p>
-                        <Link href="/add-studio" className="btn btn-primary btn-sm mt-6 text-white rounded-xl">
-                            List Your First Space
-                        </Link>
-                    </div>
+                    <EmptyState
+                        title="No Hosted Studios Found"
+                        description="You have not published any workspace listings yet. Start hosting your photo studio, film stage, or podcast suite today."
+                        actionLabel="Host Your First Studio"
+                        actionHref="/add-studio"
+                        secondaryLabel="Explore Other Spaces"
+                        secondaryHref="/studios"
+                    />
                 )}
 
                 {selectedStudio && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
                         <div className="bg-base-200 border border-base-300 rounded-3xl max-w-sm w-full p-6 shadow-2xl">
-                            <h3 className="text-lg font-bold text-base-content">Confirm Deletion</h3>
+                            <h3 className="text-lg font-bold text-base-content">
+                                Confirm Deletion
+                            </h3>
                             <p className="text-xs text-base-content/70 mt-2">
-                                Are you sure you want to delete <span className="font-bold text-base-content">&quot;{selectedStudio.title}&quot;</span>? This listing will be permanently removed from MongoDB.
+                                Are you sure you want to delete{" "}
+                                <span className="font-bold text-base-content">
+                                    &quot;{selectedStudio.title}&quot;
+                                </span>
+                                ? This listing will be permanently removed from MongoDB.
                             </p>
 
                             <div className="flex gap-3 mt-6">
@@ -157,7 +186,11 @@ export default function MyListingsPage() {
                                     disabled={deleting}
                                     className="btn btn-error btn-sm flex-1 text-white font-bold rounded-xl"
                                 >
-                                    {deleting ? <span className="loading loading-spinner loading-xs"></span> : "Confirm Delete"}
+                                    {deleting ? (
+                                        <span className="loading loading-spinner loading-xs"></span>
+                                    ) : (
+                                        "Confirm Delete"
+                                    )}
                                 </button>
                             </div>
                         </div>

@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useSession } from "@/lib/auth-client";
 import PrivateRoute from "@/components/PrivateRoute";
 import toast from "react-hot-toast";
 
@@ -29,7 +28,6 @@ const CATEGORIES = [
 export default function EditStudioPage() {
     const { id } = useParams();
     const router = useRouter();
-    const { data: session } = useSession();
 
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -66,7 +64,7 @@ export default function EditStudioPage() {
                     ownerEmail: data.ownerEmail || "",
                     ownerName: data.ownerName || "",
                 });
-            } catch (err) {
+            } catch {
                 toast.error("Failed to load studio details for editing");
             } finally {
                 setLoading(false);
@@ -94,6 +92,7 @@ export default function EditStudioPage() {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/studios/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(formData),
             });
 

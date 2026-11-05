@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import PrivateRoute from "@/components/PrivateRoute";
+import EmptyState from "@/components/EmptyState";
 import toast from "react-hot-toast";
 
 export default function MyBookingsPage() {
@@ -27,14 +28,22 @@ export default function MyBookingsPage() {
     };
 
     useEffect(() => {
-        fetchBookings();
+        // Load via a local async function — calling a setState-containing
+        // function directly inside an effect trips react-hooks/set-state-in-effect.
+        async function load() {
+            await fetchBookings();
+        }
+        load();
     }, [session]);
 
     const handleCancelBooking = async (bookingId) => {
         try {
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/bookings/${bookingId}/cancel`,
-                { method: "PATCH" }
+                {
+                    method: "PATCH",
+                    credentials: "include",
+                }
             );
             if (!res.ok) throw new Error("Could not cancel reservation");
 
@@ -115,12 +124,12 @@ export default function MyBookingsPage() {
                         </table>
                     </div>
                 ) : (
-                    <div className="text-center py-24 bg-base-200 border border-base-300 rounded-3xl">
-                        <h3 className="text-lg font-bold text-base-content">No active studio reservations</h3>
-                        <p className="text-xs text-base-content/60 mt-2">
-                            Browse available production lofts, stages, and suites to book your shoot hours.
-                        </p>
-                    </div>
+                    <EmptyState
+                        title="No Active Reservations"
+                        description="You haven't reserved any studio slots yet. Discover creative spaces, check hourly rates, and book your production session."
+                        actionLabel="Explore Studios Now"
+                        actionHref="/studios"
+                    />
                 )}
             </div>
         </PrivateRoute>
